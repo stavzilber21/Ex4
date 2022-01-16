@@ -1,21 +1,11 @@
-
 from Node import Node
 
-"""This abstract class represents an interface of a graph."""
-
-
-class DiGraph:
-
-    # def __init__(self, nodes:{}, edges:{})-> None:
-    #     # self.nodes = {(n['id']): n['pos'] for n in nodes}
-    #     # self.edges = {(e['src'], e['dest']): e['w'] for e in edges}
-    #     self.mc = 0
+class DiGraph():
 
     def __init__(self)-> None:
         self.nodes = {}
         self.edges = {}
         self.mc = 0
-
 
     def __repr__(self) -> str:
         return f"Nodes: {self.nodes}\nEdges: {self.edges}"
@@ -36,15 +26,12 @@ class DiGraph:
                 ans[len(ans)] = {(value['src']):value['w']}
         return ans
 
-
     def all_out_edges_of_node(self, id1: int) -> dict:
         ans = {}
         for key, value in self.edges.items():
             if value['src'] == id1:
                 ans[len(ans)] = {(value['dest']): value['w']}
         return ans
-
-
 
     def get_mc(self) -> int:
         return self.mc

@@ -3,8 +3,9 @@ import json
 from numpy import double
 from DiGraph import DiGraph
 import random
-from AgentUtils import Agent
 from PokemonUtils import Pokemon
+from AgentUtils import Agent
+import matplotlib.pyplot as plt
 
 class GraphAlgo():
 
@@ -19,10 +20,10 @@ class GraphAlgo():
     def get_graph(self):
         return self.graph
 
-    def load_from_json(self, string: str):
+    def load_from_json(self, info: str):
         self.__init__()
         graph = DiGraph()
-        dict = json.loads(string)
+        dict = json.loads(info)
         for n in range(len(dict["Nodes"])):
             id = dict["Nodes"][n]["id"]
             pos = dict["Nodes"][n]["pos"]
@@ -130,21 +131,21 @@ class GraphAlgo():
 
 
 
-    def load_pokemons(self,string:str) -> dict:
+    def load_pokemons(self,pokemon_list:str) -> dict:
         pokemons = {}
-        dict = json.loads(string)
+        dict = json.loads(pokemon_list)
         for n in range(len(dict["Pokemons"])):
             value = dict["Pokemons"][n]["Pokemon"]["value"]
             type = dict["Pokemons"][n]["Pokemon"]["type"]
             pos = dict["Pokemons"][n]["Pokemon"]["pos"]
-            p = Pokemon(value,type,pos)
+            p = Pokemon(value, type, pos, self.graph)
             pokemons[n]= p
         return pokemons
 
 
-    def load_agents(self,file:str) -> dict:
+    def load_agents(self,agent_list:str) -> dict:
         agents = {}
-        dict = json.loads(file)
+        dict = json.loads(agent_list)
         for n in range(len(dict["Agents"])):
             id = dict["Agents"][n]["Agent"]["id"]
             value = dict["Agents"][n]["Agent"]["value"]
@@ -155,6 +156,30 @@ class GraphAlgo():
             agent = Agent(id,value,src,dest,speed,pos)
             agents[n]= agent
         return agents
+
+    # Finds pokemon to which to send the agent
+    def choosePokForAgent(self, agent: Agent,pokemons:dict):
+        minDist = float('inf')
+        pokemonMin = None
+        index=None
+        next_node=None
+        for p, pokemon in pokemons.items():
+            if agent.src == pokemon.src:
+                return pokemon, pokemon.get_dest()
+            dist, next_node_temp = self.shortest_path(agent.get_src(), pokemon.get_src())
+            if dist < minDist:
+                minDist = dist
+                pokemonMin = pokemon
+                index = p
+                if len(next_node_temp)==1:
+                    next_node=next_node_temp[0]
+                else:
+                    next_node = next_node_temp[1]
+        del pokemons[index]
+        return pokemonMin, next_node
+
+
+
 
 
 

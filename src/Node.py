@@ -1,5 +1,6 @@
 
 class Node:
+
     def __init__(self, id, pos: tuple=None) -> None:
         self.pos = pos
         self.id = id
@@ -18,10 +19,6 @@ class Node:
 
     def setPos(self,pos: tuple):
         self.pos = pos
-
-    def __repr__(self) -> str:
-        return f"id:{self.id} pos:{self.pos}"
-
 
 
 
